@@ -61,6 +61,15 @@ const ItemCtrl = (function(){
 
 
 const UICtrl = (function(){
+
+	const UISeletors = {
+		boss: "boss",
+		bossDep: "bossDep",
+		bossPos: "bossPos",
+		bossCall: "bossCall",
+		addBoss: "addBoss"
+	}
+
 	function generateCallSheet(callTime){
 		let div = document.createElement("div");
 		let body = document.querySelector("body");
@@ -74,12 +83,14 @@ const UICtrl = (function(){
 
 	}
 
-	function addCrew(person){
+	function addPerson(person){
 		let ul = document.querySelector("ul");
 		let li = document.createElement("li");
-		li.textContent = `${person.name} ${person.callTime}`;
+		li.textContent = `${person.name} ${person.position} ${person.department} ${person.callTime}`;
 		ul.appendChild(li);
 	}
+
+
 
 	return {
 		makeCall: function(callTime){
@@ -87,6 +98,12 @@ const UICtrl = (function(){
 		},
 		makeCrew: function(person){
 			addCrew(person);
+		},
+		getUISelectors: function(){
+			return UISeletors;
+		},
+		addPerson: function(person){
+			addPerson(person);
 		}
 	}
 
@@ -94,11 +111,26 @@ const UICtrl = (function(){
 
 
 const App = (function(ItemCtrl, UICtrl){
-	let callSheet = ItemCtrl.makeCallSheet("One Dollar", "7am");
-	UICtrl.makeCall(callSheet.crewCall);
-	let al = ItemCtrl.makeCrew("allan barch", "Electric", "set lighting", "6:30am");
-	UICtrl.makeCrew(al);
-	console.log(callSheet);
+
+	function loadEvents(){
+		let selectors = UICtrl.getUISelectors();
+		document.getElementById(selectors.addBoss).addEventListener("click", function(){
+			let name = document.getElementById(selectors.boss).value;
+			let dep  = document.getElementById(selectors.bossDep).value;
+			let pos = document.getElementById(selectors.bossPos).value;
+			let call = document.getElementById(selectors.bossCall).value;
+			let person = ItemCtrl.makeBoss(name,dep,pos,call);
+			UICtrl.addPerson(person);
+		});
+	}
+	return {
+		init: function(){
+			let callSheet = ItemCtrl.makeCallSheet("One Dollar", "7am");
+			UICtrl.makeCall(callSheet.crewCall);
+			loadEvents();
+		}
+	}
+	
 
 
 
@@ -108,7 +140,7 @@ const App = (function(ItemCtrl, UICtrl){
 
 
 
-
+App.init();
 
 
 
