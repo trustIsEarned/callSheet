@@ -47,11 +47,11 @@ const ItemCtrl = (function(){
 			let callSheet = new CallSheet(title,crewCall);
 			return callSheet;
 		},
-		makeCrew(name,department,position,callTime){
+		makeCrew: function(name,department,position,callTime){
 			let crew = new Crew(name,department, position, callTime);
 			return crew;
 		},
-		makeBoss(name,department,position,callTime){
+		makeBoss: function(name,department,position,callTime){
 			let boss = new Boss(name,department,position, callTime);
 			return boss;
 		}
@@ -67,7 +67,8 @@ const UICtrl = (function(){
 		bossDep: "bossDep",
 		bossPos: "bossPos",
 		bossCall: "bossCall",
-		addBoss: "addBoss"
+		addBoss: "addBoss",
+		addCrew: "addCrew"
 	}
 
 	function generateCallSheet(callTime){
@@ -111,7 +112,7 @@ const UICtrl = (function(){
 
 
 const App = (function(ItemCtrl, UICtrl){
-
+	let callSheet = ItemCtrl.makeCallSheet("One Dollar", "7am");
 	function loadEvents(){
 		let selectors = UICtrl.getUISelectors();
 		document.getElementById(selectors.addBoss).addEventListener("click", function(){
@@ -121,11 +122,23 @@ const App = (function(ItemCtrl, UICtrl){
 			let call = document.getElementById(selectors.bossCall).value;
 			let person = ItemCtrl.makeBoss(name,dep,pos,call);
 			UICtrl.addPerson(person);
+			callSheet.addCrew(person);
+			console.log(callSheet);
+		});
+		document.getElementById(selectors.addCrew).addEventListener("click", function(){
+			let name = document.getElementById(selectors.boss).value;
+			let dep  = document.getElementById(selectors.bossDep).value;
+			let pos = document.getElementById(selectors.bossPos).value;
+			let call = document.getElementById(selectors.bossCall).value;
+			let person = ItemCtrl.makeCrew(name,dep,pos,call);
+			UICtrl.addPerson(person);
+			callSheet.addCrew(person);
+			console.log(callSheet);
 		});
 	}
 	return {
 		init: function(){
-			let callSheet = ItemCtrl.makeCallSheet("One Dollar", "7am");
+			
 			UICtrl.makeCall(callSheet.crewCall);
 			loadEvents();
 		}
